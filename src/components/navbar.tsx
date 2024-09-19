@@ -1,4 +1,6 @@
+"use client";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { IconType } from "react-icons";
 import { FaCalendarDays, FaCircleCheck } from "react-icons/fa6";
 import { MdCalendarViewDay, MdNotes, MdSettings } from "react-icons/md";
@@ -52,7 +54,11 @@ const navbarButtons: NavbarButton[] = [
 ];
 
 export const Navbar = () => {
-  const isLoading = false;
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(false);
+  }, []);
 
   return (
     <div className="navbar btm-nav bg-base-300 align-stretch gap-2 h-fit">
@@ -62,7 +68,7 @@ export const Navbar = () => {
             href={path}
             className={twJoin(
               "btn btn-block btn-md",
-              isLoading && "btn-outline",
+              isLoading && "btn-disabled btn-outline",
               `btn-${color || "info"}`
             )}
           >

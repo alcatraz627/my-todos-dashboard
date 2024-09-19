@@ -6,10 +6,17 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "@prisma.dev": "dotenv -e .env.development.local -- npx prisma ",
+    "@prisma.prod": "npx prisma ",
+    "postinstall": "npm run @prisma.prod generate"
   },
   "dependencies": {
+    "@prisma/client": "^5.19.1",
+    "@tanstack/react-query": "^5.56.2",
+    "@vercel/postgres": "^0.10.0",
     "daisyui": "^4.12.10",
+    "dotenv": "^16.4.5",
     "next": "14.2.11",
     "react": "^18",
     "react-dom": "^18",
@@ -25,5 +32,9 @@
     "tailwind-merge": "^2.5.2",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
+  },
+  "prisma": {
+    "schema": "src/db/schema.prisma",
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} db/seed.ts"
   }
 }
