@@ -14,6 +14,17 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [require("daisyui")],
+  daisyui: {
+    themes: [
+      {
+        sunset: {
+          // eslint-disable-next-line @typescript-eslint/no-var-requires
+          ...require("daisyui/src/theming/themes")["sunset"],
+          // secondary: "",
+        },
+      },
+    ],
+  },
 };
 export default config;
