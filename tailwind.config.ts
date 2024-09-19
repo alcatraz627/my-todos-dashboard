@@ -1,3 +1,4 @@
+import daisyui from "daisyui";
 import type { Config } from "tailwindcss";
 
 const config: Config = {
@@ -5,6 +6,7 @@ const config: Config = {
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
@@ -14,17 +16,28 @@ const config: Config = {
       },
     },
   },
-  plugins: [require("daisyui")],
+  safelist: [
+    "btn-primary",
+    "btn-secondary",
+    "btn-success",
+    "btn-info",
+    "btn-error",
+    "btn-neutral",
+    "btn-warning",
+    "btn-ghost",
+  ],
+  plugins: [daisyui],
   daisyui: {
-    themes: [
-      {
-        sunset: {
-          // eslint-disable-next-line @typescript-eslint/no-var-requires
-          ...require("daisyui/src/theming/themes")["sunset"],
-          // secondary: "",
-        },
-      },
-    ],
+    themes: ["night"],
+    // themes: [
+    //   {
+    //     sunset: {
+    //       // eslint-disable-next-line @typescript-eslint/no-var-requires
+    //       ...require("daisyui/src/theming/themes")["sunset"],
+    //       // secondary: "",
+    //     },
+    //   },
+    // ],
   },
 };
 export default config;
