@@ -61,7 +61,7 @@ export const Navbar = () => {
   }, []);
 
   return (
-    <div className="navbar btm-nav bg-base-300 align-stretch gap-2 h-fit">
+    <div className="navbar btm-nav bg-base-300 align-stretch gap-2 h-fit max-w-screen-md mx-auto">
       {navbarButtons.map(({ path, icon: Icon, color, title }, idx) => (
         <div key={idx}>
           <Link

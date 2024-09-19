@@ -18,15 +18,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${nunito.className} antialiased bg-base-100 text-white`}
-      >
+      <body className={`${nunito.className} antialiased `}>
         <Providers>
-          <div className="text-2xl text-center pt-4 pb-2 mb-4 font-mono border-b-2 border-primary bg-info">
-            ToDo Dashboard
+          <div className="max-w-screen-md mx-auto bg-base-100 h-screen text-white">
+            <div className="text-2xl text-center pt-4 pb-2 mb-4 font-mono border-b-2 border-primary bg-info">
+              ToDo Dashboard
+            </div>
+            {children}
+            <Navbar />
           </div>
-          {children}
-          <Navbar />
         </Providers>
       </body>
     </html>

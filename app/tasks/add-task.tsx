@@ -2,7 +2,7 @@
 
 import { AppQueryKeys } from "@/src/utils";
 import { Todo } from "@prisma/client";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
 export const AddTask = ({
@@ -11,11 +11,16 @@ export const AddTask = ({
   addTask: (title: string) => Promise<Todo>;
 }) => {
   const [task, setTask] = useState("");
+
+  const { mutateAsync: callAddTask, isPending: isAdding } = useMutation({
+    mutationFn: addTask,
+  });
+
   const queryClient = useQueryClient();
   const handleAddTodo = async () => {
     if (!task) return;
 
-    await addTask(task);
+    await callAddTask(task);
     queryClient.invalidateQueries({ queryKey: AppQueryKeys.todos });
     setTask("");
   };
@@ -26,8 +31,11 @@ export const AddTask = ({
         e.preventDefault();
         handleAddTodo();
       }}
+      className="flex flex-row items-center gap-2"
     >
+      {isAdding && <span className="loading loading-spinner loading-md"></span>}
       <input
+        disabled={isAdding}
         type="text"
         placeholder="Add a Todo"
         className="input input-bordered w-full my-4"
