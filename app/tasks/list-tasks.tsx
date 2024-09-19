@@ -28,7 +28,7 @@ export const ListTasks = ({ deleteTask }: ListTasksProps) => {
 
   const [focusTodo, setFocusTodo] = useState<string | null>(null);
 
-  const { mutateAsync: callDeleteTodo, isPending: isDeleting } = useMutation({
+  const { mutateAsync: callDeleteTodo } = useMutation({
     mutationFn: deleteTask,
   });
 
