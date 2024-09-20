@@ -1,22 +1,21 @@
 import { Todo } from "@prisma/client";
-import { FaCaretDown } from "react-icons/fa6";
 import { ImBoxRemove } from "react-icons/im";
 import { MdDelete } from "react-icons/md";
 
 export const TaskDropdown = ({
   task,
   handleDeleteTask,
+  children,
 }: {
   task: Todo;
   handleDeleteTask: (id: string) => Promise<void>;
+  children: JSX.Element;
 }) => {
   return (
     <div className="dropdown dropdown-end">
-      <div role="button" className="m-1 text-gray-500" tabIndex={0}>
-        <FaCaretDown size={20} />
-      </div>
+      {children}
       <ul
-        className="dropdown-content menu bg-base-100 rounded-box z-[1] w-[60svw] p-2 shadow"
+        className="dropdown-content menu bg-base-100 rounded-box z-[1] w-[80svw] p-2 shadow border-2 border-info"
         tabIndex={0}
       >
         <li>

@@ -53,8 +53,6 @@ export const ListTasks = ({ deleteTask, updateTask }: ListTasksProps) => {
   };
 
   const handleUpdateTask = async (updateData: Todo) => {
-    console.log(updateData);
-
     const response = await callUpdateTodo(updateData);
 
     if (!response.success) {
@@ -63,7 +61,6 @@ export const ListTasks = ({ deleteTask, updateTask }: ListTasksProps) => {
       return;
     }
 
-    // TODO: Gotta do this a better way
     queryClient.invalidateQueries({ queryKey: AppQueryKeys.todos });
 
     return updateData;

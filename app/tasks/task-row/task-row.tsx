@@ -1,5 +1,5 @@
 import { Todo } from "@prisma/client";
-import { FaEdit } from "react-icons/fa";
+import { FaCaretDown, FaEdit } from "react-icons/fa";
 import { SiClockify } from "react-icons/si";
 import { twJoin } from "tailwind-merge";
 import { TaskCompleted } from "./task-completed";
@@ -17,6 +17,9 @@ export const TaskRow = ({
   handleUpdateTask: (task: Todo) => Promise<Todo | void>;
   handleDeleteTask: (id: string) => Promise<void>;
 }) => {
+  const toolbarBtnClass =
+    "btn btn-rounded btn-md pl-2 pr-2 h-10 min-h-6 join-item";
+
   return (
     <div
       key={task.id}
@@ -40,19 +43,27 @@ export const TaskRow = ({
       />
 
       {/* Dropdown */}
-      <div className="flex justify-end gap-1">
+      <div className="flex justify-end gap-0.5 join">
         {/* Raw Edit */}
-        <button className="btn btn-link text-gray-500 btn-sm btn-rounded px-1">
+        <button className={toolbarBtnClass + " text-gray-500 !pl-4"}>
           <FaEdit size={20} />
         </button>
 
         {/* Schedule */}
-        <button className="btn btn-link btn-sm btn-rounded px-1">
+        <button className={"!px-3 " + toolbarBtnClass}>
           <SiClockify size={20} />
         </button>
 
         {/* Options */}
-        <TaskDropdown task={task} handleDeleteTask={handleDeleteTask} />
+        <TaskDropdown task={task} handleDeleteTask={handleDeleteTask}>
+          <div
+            role="button"
+            className={"text-gray-500 focus:text-info " + toolbarBtnClass}
+            tabIndex={0}
+          >
+            <FaCaretDown size={22} />
+          </div>
+        </TaskDropdown>
       </div>
     </div>
   );

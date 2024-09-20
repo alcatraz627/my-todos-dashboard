@@ -20,6 +20,7 @@ export const TaskTitle = ({
       readOnly={!isMounted}
       value={editedTitle}
       onChange={(e) => {
+        if (!isMounted) return;
         setEditedTitle(e.target.value);
       }}
       onBlur={() => handleUpdateTaskTitle(editedTitle)}
