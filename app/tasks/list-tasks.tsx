@@ -25,13 +25,13 @@ export const ListTasks = ({ deleteTask, updateTask }: ListTasksProps) => {
   });
 
   // The task currently in focus
+  // Useful for visual feedback
   const [focusTodo, setFocusTodo] = useState<string | null>(null);
 
   const { mutateAsync: callDeleteTodo } = useMutation({
     mutationFn: createServerAction(deleteTask),
   });
 
-  // const [updatedTodo, setUpdatedTodo] = useState<Task>(task)
   const { mutateAsync: callUpdateTodo } = useMutation({
     mutationFn: createServerAction(updateTask),
   });
