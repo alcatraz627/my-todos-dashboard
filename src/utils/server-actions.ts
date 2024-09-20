@@ -1,3 +1,5 @@
+// Refer https://joulev.dev/blogs/throwing-expected-errors-in-react-server-actions
+
 export type ServerActionResult<T> =
   | { success: true; value: T }
   | { success: false; error: string };
