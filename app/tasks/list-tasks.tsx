@@ -5,7 +5,7 @@ import { createServerAction } from "@/src/utils/server-actions";
 import { Todo } from "@prisma/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { TaskRow } from "./list-tasks/task-row";
+import { TaskRow } from "./task-row/task-row";
 
 export interface ListTasksProps {
   initialTasks: Todo[];

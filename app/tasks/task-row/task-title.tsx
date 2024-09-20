@@ -17,7 +17,7 @@ export const TaskTitle = ({
       type="text"
       placeholder="Type here"
       className="input text-primary-content w-full max-w-xs"
-      disabled={!isMounted}
+      readOnly={!isMounted}
       value={editedTitle}
       onChange={(e) => {
         setEditedTitle(e.target.value);
