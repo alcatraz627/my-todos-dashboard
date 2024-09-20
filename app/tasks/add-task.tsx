@@ -1,6 +1,7 @@
 "use client";
 
 import { AppQueryKeys } from "@/src/utils";
+import { createServerAction } from "@/src/utils/server-actions";
 import { Todo } from "@prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -13,14 +14,19 @@ export const AddTask = ({
   const [task, setTask] = useState("");
 
   const { mutateAsync: callAddTask, isPending: isAdding } = useMutation({
-    mutationFn: addTask,
+    mutationFn: createServerAction(addTask),
   });
 
   const queryClient = useQueryClient();
   const handleAddTodo = async () => {
     if (!task) return;
 
-    await callAddTask(task);
+    const response = await callAddTask(task);
+    if (!response.success) {
+      console.log(response.error);
+      return;
+    }
+
     queryClient.invalidateQueries({ queryKey: AppQueryKeys.todos });
     setTask("");
   };

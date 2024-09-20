@@ -1,5 +1,6 @@
 "use client";
 import { AppQueryKeys } from "@/src/utils";
+import { createServerAction } from "@/src/utils/server-actions";
 import { Todo } from "@prisma/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -29,13 +30,20 @@ export const ListTasks = ({ deleteTask }: ListTasksProps) => {
   const [focusTodo, setFocusTodo] = useState<string | null>(null);
 
   const { mutateAsync: callDeleteTodo } = useMutation({
-    mutationFn: deleteTask,
+    mutationFn: createServerAction(deleteTask),
   });
 
   const handleDeleteTask = async (id: string) => {
     // TODO: Ask for confirmation
     setFocusTodo(id);
-    await callDeleteTodo(id);
+    const response = await callDeleteTodo(id);
+
+    if (!response.success) {
+      // TODO: Show error
+      console.log(response.error);
+      return;
+    }
+
     queryClient.invalidateQueries({ queryKey: AppQueryKeys.todos });
     setFocusTodo(null);
     // TODO: Show an "undo" toast
