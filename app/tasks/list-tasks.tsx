@@ -1,36 +1,39 @@
 "use client";
+import { listTasks } from "@/src/data/todos.api";
 import { AppQueryKeys } from "@/src/utils";
 import { createServerAction } from "@/src/utils/server-actions";
 import { Todo } from "@prisma/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { FaEdit } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
-import { twJoin } from "tailwind-merge";
+import { TaskRow } from "./list-tasks/task-row";
 
 export interface ListTasksProps {
   initialTasks: Todo[];
   deleteTask: (id: string) => Promise<Todo>;
+  updateTask: (task: Todo) => Promise<Todo>;
 }
 
 // Making direct API calls is better for client side data fetching useQuery
 // setup, since the direct server action call only works during SSR
-const listTasks = async () => {
-  return (await fetch("/tasks/api").then((r) => r.json())) as Todo[];
-};
 
-export const ListTasks = ({ deleteTask }: ListTasksProps) => {
+export const ListTasks = ({ deleteTask, updateTask }: ListTasksProps) => {
   const queryClient = useQueryClient();
 
   const { data: tasks = [], isPending: isLoading } = useQuery({
-    queryKey: ["todos"],
+    queryKey: AppQueryKeys.todos,
     queryFn: listTasks,
   });
 
+  // The task currently in focus
   const [focusTodo, setFocusTodo] = useState<string | null>(null);
 
   const { mutateAsync: callDeleteTodo } = useMutation({
     mutationFn: createServerAction(deleteTask),
+  });
+
+  // const [updatedTodo, setUpdatedTodo] = useState<Task>(task)
+  const { mutateAsync: callUpdateTodo } = useMutation({
+    mutationFn: createServerAction(updateTask),
   });
 
   const handleDeleteTask = async (id: string) => {
@@ -44,42 +47,37 @@ export const ListTasks = ({ deleteTask }: ListTasksProps) => {
       return;
     }
 
-    queryClient.invalidateQueries({ queryKey: AppQueryKeys.todos });
+    await queryClient.invalidateQueries({ queryKey: AppQueryKeys.todos });
     setFocusTodo(null);
     // TODO: Show an "undo" toast
+  };
+
+  const handleUpdateTask = async (updateData: Todo) => {
+    console.log(updateData);
+
+    const response = await callUpdateTodo(updateData);
+
+    if (!response.success) {
+      // TODO: Show error
+      console.log(response.error);
+      return;
+    }
+
+    // TODO: Gotta do this a better way
+    queryClient.invalidateQueries({ queryKey: AppQueryKeys.todos });
+
+    return updateData;
   };
 
   return (
     <div>
       {tasks.map((task) => (
-        <div
-          key={task.id}
-          className={twJoin(
-            "form-control justify-between items-center flex-row",
-            task.id === focusTodo && "opacity-35"
-          )}
-        >
-          <label className="label cursor-pointer justify-start gap-2">
-            <input
-              type="checkbox"
-              className="checkbox checkbox-primary"
-              defaultChecked={task.completed}
-            />
-            <span className="label-text">{task.title}</span>
-          </label>
-          {/* Edit and delete buttons */}
-          <div className="flex justify-end gap-0">
-            <button className="btn btn-link text-warning btn-sm btn-rounded px-1">
-              <FaEdit size={16} />
-            </button>
-            <button
-              className="btn btn-link text-error btn-sm btn-rounded px-1"
-              onClick={() => handleDeleteTask(task.id)}
-            >
-              <MdDelete size={16} />
-            </button>
-          </div>
-        </div>
+        <TaskRow
+          task={task}
+          isInFocus={focusTodo === task.id}
+          handleUpdateTask={handleUpdateTask}
+          handleDeleteTask={handleDeleteTask}
+        />
       ))}
 
       {isLoading && (

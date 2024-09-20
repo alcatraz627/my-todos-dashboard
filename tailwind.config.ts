@@ -28,7 +28,25 @@ const config: Config = {
   ],
   plugins: [daisyui],
   daisyui: {
-    themes: ["night"],
+    themes: [
+      {
+        mytheme: {
+          primary: "#00b9ff",
+          "primary-content": "#f3f4f6",
+          secondary: "#eab308",
+          accent: "#db2777",
+          neutral: "#374151",
+          "base-100": "#062d3c",
+          "base-200": "#042633",
+          "base-300": "#031f2a",
+          info: "#7e22ce",
+          success: "#008300",
+          warning: "#ea580c",
+          error: "#e11d48",
+        },
+      },
+    ],
+    // themes: ["light"],
     // themes: [
     //   {
     //     sunset: {

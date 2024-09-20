@@ -20,8 +20,8 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${nunito.className} antialiased `}>
         <Providers>
-          <div className="max-w-screen-md mx-auto bg-base-100 h-screen text-white">
-            <div className="text-2xl text-center pt-4 pb-2 mb-4 font-mono border-b-2 border-primary bg-info">
+          <div className="max-w-screen-md mx-auto bg-base-100 h-screen text-primary-content">
+            <div className="text-2xl text-center pt-4 pb-2 mb-4 font-mono border-b-4 border-primary-content bg-primary">
               ToDo Dashboard
             </div>
             {children}

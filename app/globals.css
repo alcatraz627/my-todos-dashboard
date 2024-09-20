@@ -4,7 +4,9 @@
 
 :root {
   /* --background: var(--b1); */
-  --background: #333;
+  /* --foreground: #333;
+  --background: #fff; */
+  --background: #444;
   --foreground: #fff;
 }
 
