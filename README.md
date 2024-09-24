@@ -29,3 +29,13 @@
 - Reorder
 - Completed to be shown at the bottom
 > Sort, Search, and Filter
+
+---
+
+## Commands
+
+Prisma Setup
+- `npx prisma generate` - Generate Prisma Client
+- `npx prisma db push` - Push db changes to vercel
+- `npx prisma db seed` - Seed db
+- `npx prisma migrate dev` - Generate migrations for "dev" mode

@@ -26,8 +26,18 @@ model Todo {
     // Board   Board?  @relation(fields: [boardId], references: [id])
     // boardId String?
 
-    created_at DateTime @default(now())
-    updated_at DateTime @updatedAt
+    created_at DateTime    @default(now())
+    updated_at DateTime    @updatedAt
+    todoGroup  TodoGroup[]
+}
+
+model TodoGroup {
+    id          String @id @default(cuid())
+    title       String @default("")
+    description String @default("")
+
+    todo   Todo?   @relation(references: [id], fields: [todoId])
+    todoId String?
 }
 
 // model User {
