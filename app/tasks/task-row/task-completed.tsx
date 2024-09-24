@@ -22,7 +22,6 @@ export const TaskCompleted = ({
     <input
       type="checkbox"
       className="checkbox checkbox-primary checkbox-lg"
-      defaultChecked={isCompleted}
       checked={isCompleted}
       disabled={!isMounted}
       onChange={(e) => handleUpdate(e.target.checked)}

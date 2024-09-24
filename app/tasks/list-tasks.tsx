@@ -70,6 +70,7 @@ export const ListTasks = ({ deleteTask, updateTask }: ListTasksProps) => {
     <div>
       {tasks.map((task) => (
         <TaskRow
+          key={task.id}
           task={task}
           isInFocus={focusTodo === task.id}
           handleUpdateTask={handleUpdateTask}

@@ -15,7 +15,7 @@ export const TaskDropdown = ({
     <div className="dropdown dropdown-end">
       {children}
       <ul
-        className="dropdown-content menu bg-base-100 rounded-box z-[1] w-[80svw] p-2 shadow border-2 border-info"
+        className="dropdown-content menu bg-base-100 rounded-box z-[1] min-w-lg w-[30vw] max-w-xl p-2 shadow border-2 border-info"
         tabIndex={0}
       >
         <li>
