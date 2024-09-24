@@ -37,7 +37,7 @@ export const AddTask = ({
         e.preventDefault();
         handleAddTodo();
       }}
-      className="flex flex-row items-center gap-2"
+      className="flex flex-row items-center gap-2 px-4"
     >
       {isAdding && <span className="loading loading-spinner loading-md"></span>}
       <input

@@ -8,7 +8,6 @@ import { useState } from "react";
 import { TaskRow } from "./task-row/task-row";
 
 export interface ListTasksProps {
-  initialTasks: Todo[];
   deleteTask: (id: string) => Promise<Todo>;
   updateTask: (task: Todo) => Promise<Todo>;
 }
@@ -67,7 +66,7 @@ export const ListTasks = ({ deleteTask, updateTask }: ListTasksProps) => {
   };
 
   return (
-    <div>
+    <div className="px-4">
       {tasks.map((task) => (
         <TaskRow
           key={task.id}
