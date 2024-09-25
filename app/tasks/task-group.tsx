@@ -1,35 +1,31 @@
 "use client";
-import { listTaskGroups } from "@/src/data/todos.api";
 import { AppQueryKeys } from "@/src/utils";
 import { createServerAction } from "@/src/utils/server-actions";
 import { TodoGroup } from "@prisma/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { ApiService } from "../api/api-caller";
 import { AddTaskGroup } from "./task-group/add-task-group";
 import { TaskGroupTab } from "./task-group/task-group-tab";
 
-export const TaskGroup = ({
-  addTaskGroup,
-  updateTaskGroup,
-  deleteTaskGroup,
-}: {
-  addTaskGroup: (title: string) => Promise<TodoGroup>;
-  updateTaskGroup: (data: TodoGroup) => Promise<TodoGroup>;
-  deleteTaskGroup: (id: string) => Promise<TodoGroup>;
-}) => {
+export const TaskGroup = () => {
   const queryClient = useQueryClient();
 
+  const { mutateAsync: callCreateTodoGroup } = useMutation({
+    mutationFn: createServerAction(ApiService.taskGroups.createTaskGroup),
+  });
+
   const { mutateAsync: callDeleteTodoGroup } = useMutation({
-    mutationFn: createServerAction(deleteTaskGroup),
+    mutationFn: createServerAction(ApiService.taskGroups.deleteTaskGroup),
   });
 
   const { mutateAsync: callUpdateTodoGroup } = useMutation({
-    mutationFn: createServerAction(updateTaskGroup),
+    mutationFn: createServerAction(ApiService.taskGroups.updateTaskGroup),
   });
 
   const { data: todoGroups = [], isPending: isLoading } = useQuery({
     queryKey: AppQueryKeys.todoGroups,
-    queryFn: listTaskGroups,
+    queryFn: ApiService.taskGroups.listTaskGroups,
   });
 
   // const [taskGroups, setTaskGroups] = useState(["Default", "Alone"]);
@@ -61,6 +57,24 @@ export const TaskGroup = ({
     // TODO: Show an "undo" toast
   };
 
+  const handleAddNewTodoGroup = async (title: TodoGroup["title"]) => {
+    const response = await callCreateTodoGroup({
+      title,
+      description: "",
+      color: "",
+    });
+
+    if (!response.success) {
+      // TODO: Show error
+      console.log(response.error);
+      return;
+    }
+
+    queryClient.invalidateQueries({ queryKey: AppQueryKeys.todoGroups });
+
+    return response.value;
+  };
+
   const handleUpdateTodoGroup = async (updateData: TodoGroup) => {
     const response = await callUpdateTodoGroup(updateData);
 
@@ -76,8 +90,8 @@ export const TaskGroup = ({
   };
 
   return (
-    <div className="mt-auto w-[100%] flex flex-row flex-grow-0 justify-between items-center">
-      <div className="tabs tabs-boxed w-[100%]" role="tablist">
+    <div className="mt-auto w-[100%] flex flex-row flex-grow-0 bg-base-200 justify-between items-center">
+      <div className="tabs tabs-boxed w-[100%] justify-start" role="tablist">
         {todoGroups.map((todoGroup) => (
           <TaskGroupTab
             key={todoGroup.id}
@@ -94,7 +108,7 @@ export const TaskGroup = ({
       {isLoading && (
         <span className="tab loading loading-spinner loading-sm ml-auto mr-0"></span>
       )}
-      <AddTaskGroup handleAddNew={addTaskGroup} />
+      <AddTaskGroup handleAddNew={handleAddNewTodoGroup} />
     </div>
   );
 };

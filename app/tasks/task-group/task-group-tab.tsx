@@ -29,7 +29,7 @@ export const TaskGroupTab = ({
     <a
       role="tab"
       className={twJoin(
-        "tab transition bg-base-200 flex flex-row justify-between px-4",
+        "tab transition bg-base-200 flex flex-row justify-between px-4 gap-4 max-w-[400px] w-fit",
         selected && "tab-active !bg-info"
       )}
       onClick={(e) => {

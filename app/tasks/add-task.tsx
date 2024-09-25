@@ -2,33 +2,29 @@
 
 import { AppQueryKeys } from "@/src/utils";
 import { createServerAction } from "@/src/utils/server-actions";
-import { Todo } from "@prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { ApiService } from "../api/api-caller";
 
-export const AddTask = ({
-  addTask,
-}: {
-  addTask: (title: string) => Promise<Todo>;
-}) => {
-  const [task, setTask] = useState("");
+export const AddTask = () => {
+  const [taskTitle, setTaskTitle] = useState("");
 
   const { mutateAsync: callAddTask, isPending: isAdding } = useMutation({
-    mutationFn: createServerAction(addTask),
+    mutationFn: createServerAction(ApiService.tasks.createTask),
   });
 
   const queryClient = useQueryClient();
   const handleAddTodo = async () => {
-    if (!task) return;
+    if (!taskTitle) return;
 
-    const response = await callAddTask(task);
+    const response = await callAddTask({ title: taskTitle, description: "" });
     if (!response.success) {
       console.log(response.error);
       return;
     }
 
     queryClient.invalidateQueries({ queryKey: AppQueryKeys.todos });
-    setTask("");
+    setTaskTitle("");
   };
 
   return (
@@ -45,8 +41,8 @@ export const AddTask = ({
         type="text"
         placeholder="Add a Todo"
         className="input input-bordered w-full my-4"
-        value={task}
-        onChange={(e) => setTask(e.target.value)}
+        value={taskTitle}
+        onChange={(e) => setTaskTitle(e.target.value)}
       />
     </form>
   );

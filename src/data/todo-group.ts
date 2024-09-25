@@ -1,6 +1,7 @@
+import { TodoGroup } from "@prisma/client";
 import { prisma } from "../db/client";
 
-export const listTodoGroups = async () => {
+export const listTodoGroupsDb = async () => {
   const todos = await prisma.todoGroup.findMany({
     orderBy: {
       created_at: "asc",
@@ -9,28 +10,19 @@ export const listTodoGroups = async () => {
   return todos;
 };
 
-export const getTodoGroup = async (id: string) => {
+export const getTodoGroupDb = async (id: string) => {
   const todoGroup = await prisma.todoGroup.findUnique({ where: { id } });
   return todoGroup;
 };
 
-export const createTodoGroup = async ({
-  title,
-  description = "",
-}: {
-  title: string;
-  description?: string;
-}) => {
+export const createTodoGroupDb = async (data: Omit<TodoGroup, "id">) => {
   const todo = await prisma.todoGroup.create({
-    data: {
-      title,
-      description,
-    },
+    data,
   });
   return todo;
 };
 
-export const addTodoToGroup = async ({
+export const addTodoToGroupDb = async ({
   todoId,
   groupId,
 }: {
@@ -48,26 +40,17 @@ export const addTodoToGroup = async ({
   return todo;
 };
 
-export const updateTodoGroup = async ({
-  id,
-  ...data
-}: {
-  id: string;
-  title: string;
-  description?: string;
-}) => {
+export const updateTodoGroupDb = async ({ id, ...data }: TodoGroup) => {
   const todo = await prisma.todoGroup.update({
     where: {
       id,
     },
-    data: {
-      ...data,
-    },
+    data,
   });
   return todo;
 };
 
-export const deleteTodoGroup = async (id: string) => {
+export const deleteTodoGroupDb = async (id: TodoGroup["id"]) => {
   const todo = await prisma.todoGroup.delete({
     where: {
       id,

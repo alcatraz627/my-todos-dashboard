@@ -9,7 +9,7 @@ import { FaSquarePlus } from "react-icons/fa6";
 export const AddTaskGroupTitle = ({
   addTaskGroup,
 }: {
-  addTaskGroup: (title: string) => Promise<TodoGroup>;
+  addTaskGroup: (title: string) => Promise<TodoGroup | void>;
 }) => {
   const queryClient = useQueryClient();
   const [newTaskGroup, setNewTaskGroup] = useState("");
@@ -55,21 +55,16 @@ export const AddTaskGroupTitle = ({
 export const AddTaskGroup = ({
   handleAddNew,
 }: {
-  handleAddNew: (p: string) => Promise<TodoGroup>;
+  handleAddNew: (p: string) => Promise<TodoGroup | void>;
 }) => {
   return (
     <div className="dropdown dropdown-top dropdown-left bg-base-200 max-w-[40px] mx-3">
-      <div
-        role="button"
-        className="focus:text-accent"
-        // onClick={() => handleAddNew("New Group")}
-        tabIndex={0}
-      >
+      <div role="button" className="focus:text-accent" tabIndex={0}>
         <FaSquarePlus />
       </div>
 
       <div
-        className="dropdown-content menu bg-base-100 rounded-box z-[1] shadow border-2 border-info mb-3 [inset-inline-end:0px!important] w-[calc(100vw-50px)]"
+        className="dropdown-content menu bg-base-100 rounded-box z-[1] shadow border-2 border-info mb-3 [inset-inline-end:0px!important] w-[70vw]"
         tabIndex={0}
       >
         <AddTaskGroupTitle addTaskGroup={handleAddNew} />

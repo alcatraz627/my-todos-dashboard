@@ -1,26 +1,21 @@
 "use client";
-import { listTasks } from "@/src/data/todos.api";
 import { AppQueryKeys } from "@/src/utils";
 import { createServerAction } from "@/src/utils/server-actions";
 import { Todo } from "@prisma/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { ApiService } from "../api/api-caller";
 import { TaskRow } from "./task-row/task-row";
-
-export interface ListTasksProps {
-  deleteTask: (id: string) => Promise<Todo>;
-  updateTask: (task: Todo) => Promise<Todo>;
-}
 
 // Making direct API calls is better for client side data fetching useQuery
 // setup, since the direct server action call only works during SSR
 
-export const ListTasks = ({ deleteTask, updateTask }: ListTasksProps) => {
+export const ListTasks = () => {
   const queryClient = useQueryClient();
 
   const { data: tasks = [], isPending: isLoading } = useQuery({
     queryKey: AppQueryKeys.todos,
-    queryFn: listTasks,
+    queryFn: ApiService.tasks.listTasks,
   });
 
   // The task currently in focus
@@ -28,11 +23,11 @@ export const ListTasks = ({ deleteTask, updateTask }: ListTasksProps) => {
   const [focusTodo, setFocusTodo] = useState<string | null>(null);
 
   const { mutateAsync: callDeleteTodo } = useMutation({
-    mutationFn: createServerAction(deleteTask),
+    mutationFn: createServerAction(ApiService.tasks.deleteTask),
   });
 
   const { mutateAsync: callUpdateTodo } = useMutation({
-    mutationFn: createServerAction(updateTask),
+    mutationFn: createServerAction(ApiService.tasks.updateTask),
   });
 
   const handleDeleteTask = async (id: string) => {

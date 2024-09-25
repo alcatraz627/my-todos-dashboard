@@ -1,6 +1,6 @@
 import { prisma } from "../db/client";
 
-export const listTodos = async () => {
+export const listTodosDb = async () => {
   const todos = await prisma.todo.findMany({
     orderBy: {
       created_at: "asc",
@@ -14,7 +14,7 @@ export const getTodo = async (id: string) => {
   return todo;
 };
 
-export const createTodo = async ({
+export const createTodoDb = async ({
   title,
   description = "",
 }: {
@@ -31,7 +31,7 @@ export const createTodo = async ({
   return todo;
 };
 
-export const updateTodo = async ({
+export const updateTodoDb = async ({
   id,
   ...data
 }: {
@@ -51,7 +51,7 @@ export const updateTodo = async ({
   return todo;
 };
 
-export const deleteTodo = async (id: string) => {
+export const deleteTodoDb = async (id: string) => {
   const todo = await prisma.todo.delete({
     where: {
       id,
