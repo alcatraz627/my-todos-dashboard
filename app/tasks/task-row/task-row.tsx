@@ -45,14 +45,18 @@ export const TaskRow = ({
       {/* Dropdown */}
       <div className="flex justify-end gap-0.5 join">
         {/* Raw Edit */}
-        <button className={toolbarBtnClass + " text-gray-500 !pl-4"}>
-          <FaEdit size={20} />
-        </button>
+        {false && (
+          <button className={toolbarBtnClass + " text-gray-500 !pl-4"}>
+            <FaEdit size={20} />
+          </button>
+        )}
 
         {/* Schedule */}
-        <button className={"!px-3 " + toolbarBtnClass}>
-          <SiClockify size={20} />
-        </button>
+        {false && (
+          <button className={"!px-3 " + toolbarBtnClass}>
+            <SiClockify size={20} />
+          </button>
+        )}
 
         {/* Options */}
         <TaskDropdown task={task} handleDeleteTask={handleDeleteTask}>

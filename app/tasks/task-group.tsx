@@ -5,7 +5,8 @@ import { createServerAction } from "@/src/utils/server-actions";
 import { TodoGroup } from "@prisma/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { AddNewTask, TaskTab } from "./task-group/components";
+import { AddTaskGroup } from "./task-group/add-task-group";
+import { TaskGroupTab } from "./task-group/task-group-tab";
 
 export const TaskGroup = ({
   addTaskGroup,
@@ -75,23 +76,25 @@ export const TaskGroup = ({
   };
 
   return (
-    <div className="mt-auto tabs tabs-boxed" role="tablist">
-      {todoGroups.map((todoGroup) => (
-        <TaskTab
-          key={todoGroup.id}
-          selected={selectedTodoGroup === todoGroup.id}
-          title={todoGroup.title}
-          onClick={() => handleSelectTodoGroup(todoGroup.id)}
-          onUpdateText={(newTitle: string) =>
-            handleUpdateTodoGroup({ ...todoGroup, title: newTitle })
-          }
-          onDeleteGroup={() => handleDeleteTodoGroup(todoGroup.id)}
-        />
-      ))}
-      <AddNewTask handleAddNew={addTaskGroup} />
+    <div className="mt-auto w-[100%] flex flex-row flex-grow-0 justify-between items-center">
+      <div className="tabs tabs-boxed w-[100%]" role="tablist">
+        {todoGroups.map((todoGroup) => (
+          <TaskGroupTab
+            key={todoGroup.id}
+            selected={selectedTodoGroup === todoGroup.id}
+            title={todoGroup.title}
+            onClick={() => handleSelectTodoGroup(todoGroup.id)}
+            onUpdateText={(newTitle: string) =>
+              handleUpdateTodoGroup({ ...todoGroup, title: newTitle })
+            }
+            onDeleteGroup={() => handleDeleteTodoGroup(todoGroup.id)}
+          />
+        ))}
+      </div>
       {isLoading && (
-        <span className=" tab loading loading-spinner loading-sm ml-auto mr-0"></span>
+        <span className="tab loading loading-spinner loading-sm ml-auto mr-0"></span>
       )}
+      <AddTaskGroup handleAddNew={addTaskGroup} />
     </div>
   );
 };
