@@ -14,7 +14,7 @@ export const AddTask = () => {
   });
 
   const queryClient = useQueryClient();
-  const handleAddTodo = async () => {
+  const handleAddTask = async () => {
     if (!taskTitle) return;
 
     const response = await callAddTask({ title: taskTitle, description: "" });
@@ -23,7 +23,7 @@ export const AddTask = () => {
       return;
     }
 
-    queryClient.invalidateQueries({ queryKey: AppQueryKeys.todos });
+    queryClient.invalidateQueries({ queryKey: AppQueryKeys.tasks });
     setTaskTitle("");
   };
 
@@ -31,7 +31,7 @@ export const AddTask = () => {
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        handleAddTodo();
+        handleAddTask();
       }}
       className="flex flex-row items-center gap-2 px-4"
     >
@@ -39,7 +39,7 @@ export const AddTask = () => {
       <input
         disabled={isAdding}
         type="text"
-        placeholder="Add a Todo"
+        placeholder="Add a Task"
         className="input input-bordered w-full my-4"
         value={taskTitle}
         onChange={(e) => setTaskTitle(e.target.value)}

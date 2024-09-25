@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { FaSquarePlus } from "react-icons/fa6";
 
-export const AddTaskGroupTitle = ({
+const AddTaskGroupTitle = ({
   addTaskGroup,
 }: {
   addTaskGroup: (title: string) => Promise<TodoGroup | void>;
@@ -27,7 +27,7 @@ export const AddTaskGroupTitle = ({
       return;
     }
 
-    queryClient.invalidateQueries({ queryKey: AppQueryKeys.todoGroups });
+    queryClient.invalidateQueries({ queryKey: AppQueryKeys.taskGroups });
     setNewTaskGroup("");
   };
 
@@ -43,7 +43,7 @@ export const AddTaskGroupTitle = ({
       <input
         disabled={isAdding}
         type="text"
-        placeholder="New Todo Group Name"
+        placeholder="New Task Group Name"
         className="input input-bordered my-2 w-[100%]"
         value={newTaskGroup}
         onChange={(e) => setNewTaskGroup(e.target.value)}

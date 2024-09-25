@@ -1,8 +1,8 @@
 import { isServer, QueryClient } from "@tanstack/react-query";
 
 export const AppQueryKeys = {
-  todos: ["todos"],
-  todoGroups: ["todoGroups"],
+  tasks: ["tasks"],
+  taskGroups: ["taskGroups"],
 };
 
 function makeQueryClient() {

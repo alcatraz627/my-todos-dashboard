@@ -14,26 +14,26 @@ export const ListTasks = () => {
   const queryClient = useQueryClient();
 
   const { data: tasks = [], isPending: isLoading } = useQuery({
-    queryKey: AppQueryKeys.todos,
+    queryKey: AppQueryKeys.tasks,
     queryFn: ApiService.tasks.listTasks,
   });
 
   // The task currently in focus
   // Useful for visual feedback
-  const [focusTodo, setFocusTodo] = useState<string | null>(null);
+  const [focusedTask, setFocusedTask] = useState<string | null>(null);
 
-  const { mutateAsync: callDeleteTodo } = useMutation({
+  const { mutateAsync: callDeleteTask } = useMutation({
     mutationFn: createServerAction(ApiService.tasks.deleteTask),
   });
 
-  const { mutateAsync: callUpdateTodo } = useMutation({
+  const { mutateAsync: callUpdateTask } = useMutation({
     mutationFn: createServerAction(ApiService.tasks.updateTask),
   });
 
   const handleDeleteTask = async (id: string) => {
     // TODO: Ask for confirmation
-    setFocusTodo(id);
-    const response = await callDeleteTodo(id);
+    setFocusedTask(id);
+    const response = await callDeleteTask(id);
 
     if (!response.success) {
       // TODO: Show error
@@ -41,13 +41,13 @@ export const ListTasks = () => {
       return;
     }
 
-    await queryClient.invalidateQueries({ queryKey: AppQueryKeys.todos });
-    setFocusTodo(null);
+    await queryClient.invalidateQueries({ queryKey: AppQueryKeys.tasks });
+    setFocusedTask(null);
     // TODO: Show an "undo" toast
   };
 
   const handleUpdateTask = async (updateData: Todo) => {
-    const response = await callUpdateTodo(updateData);
+    const response = await callUpdateTask(updateData);
 
     if (!response.success) {
       // TODO: Show error
@@ -55,7 +55,7 @@ export const ListTasks = () => {
       return;
     }
 
-    queryClient.invalidateQueries({ queryKey: AppQueryKeys.todos });
+    queryClient.invalidateQueries({ queryKey: AppQueryKeys.tasks });
 
     return updateData;
   };
@@ -66,7 +66,7 @@ export const ListTasks = () => {
         <TaskRow
           key={task.id}
           task={task}
-          isInFocus={focusTodo === task.id}
+          isInFocus={focusedTask === task.id}
           handleUpdateTask={handleUpdateTask}
           handleDeleteTask={handleDeleteTask}
         />

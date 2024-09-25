@@ -1,3 +1,4 @@
+import { PatchPayload } from "@/app/api/api-utils";
 import { TodoGroup } from "@prisma/client";
 import { prisma } from "../db/client";
 
@@ -15,7 +16,7 @@ export const getTodoGroupDb = async (id: string) => {
   return todoGroup;
 };
 
-export const createTodoGroupDb = async (data: Omit<TodoGroup, "id">) => {
+export const createTodoGroupDb = async (data: PatchPayload<TodoGroup>) => {
   const todo = await prisma.todoGroup.create({
     data,
   });
@@ -40,7 +41,10 @@ export const addTodoToGroupDb = async ({
   return todo;
 };
 
-export const updateTodoGroupDb = async ({ id, ...data }: TodoGroup) => {
+export const updateTodoGroupDb = async (
+  id: TodoGroup["id"],
+  data: PatchPayload<TodoGroup>
+) => {
   const todo = await prisma.todoGroup.update({
     where: {
       id,

@@ -1,3 +1,5 @@
+import { PatchPayload } from "@/app/api/api-utils";
+import { Todo } from "@prisma/client";
 import { prisma } from "../db/client";
 
 export const listTodosDb = async () => {
@@ -31,15 +33,10 @@ export const createTodoDb = async ({
   return todo;
 };
 
-export const updateTodoDb = async ({
-  id,
-  ...data
-}: {
-  id: string;
-  title: string;
-  description?: string;
-  completed?: boolean;
-}) => {
+export const updateTodoDb = async (
+  id: Todo["id"],
+  data: PatchPayload<Todo>
+) => {
   const todo = await prisma.todo.update({
     where: {
       id,
