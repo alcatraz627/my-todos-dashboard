@@ -62,11 +62,14 @@ export const TaskGroup = () => {
     <div className="mt-auto w-[100%] flex flex-row flex-grow-0 bg-base-200 justify-between items-center">
       <span
         className={twJoin(
-          "tab loading loading-spinner mx-0 px-2 loading-xs bg-accent",
+          "loading loading-spinner mx-0 px-2 loading-xs bg-accent",
           isLoading ? "visible" : "invisible"
         )}
-      ></span>
-      <div className="tabs tabs-boxed w-[100%] justify-start" role="tablist">
+      />
+      <div
+        className="tabs tabs-boxed w-max justify-start max-w-[90vw] overflow-x-auto"
+        role="tablist"
+      >
         {taskGroups.map((taskGroup) => (
           <TaskGroupTab
             key={taskGroup.id}

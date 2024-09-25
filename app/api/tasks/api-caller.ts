@@ -1,6 +1,6 @@
 import { Todo } from "@prisma/client";
 import axios from "axios";
-import { PatchPayload } from "../api-utils";
+import { PatchPayload, PatchPayloadWithId } from "../api-utils";
 
 const ApiBaseUrl = "/api/tasks";
 const listTasks = async () => {
@@ -13,8 +13,8 @@ const createTask = async (data: PatchPayload<Todo>) => {
   return response.data;
 };
 
-const updateTask = async (data: PatchPayload<Todo>) => {
-  const response = await axios.patch<Todo>(ApiBaseUrl, data);
+const updateTask = async (data: PatchPayloadWithId<Todo>) => {
+  const response = await axios.patch<Todo>(`${ApiBaseUrl}/${data.id}`, data);
   return response.data;
 };
 

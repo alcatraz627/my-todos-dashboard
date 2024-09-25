@@ -35,7 +35,7 @@ const EditTaskGroupRow = ({
       />
       <div
         ref={titleRef}
-        className="ml-0 mr-auto px-2 min-w-[20ch]"
+        className="ml-0 mr-auto px-2 min-w-[20ch] max-w-[70vw]"
         contentEditable
         suppressContentEditableWarning
         onKeyDown={(e) => {
@@ -45,7 +45,7 @@ const EditTaskGroupRow = ({
               id: taskGroup.id,
               title: e.currentTarget.innerText,
             });
-            e.currentTarget.blur();
+            e.currentTarget.parentElement?.parentElement?.focus?.();
           }
         }}
         onBlur={() => {
