@@ -27,5 +27,5 @@ export function createServerAction<Return, Args extends unknown[] = []>(
 }
 
 export type ServerAction<
-  Fn extends (...args: any[]) => unknown | Promise<unknown>
+  Fn extends (...args: unknown[]) => unknown | Promise<unknown>
 > = ReturnType<typeof createServerAction<ReturnType<Fn>, Parameters<Fn>>>;
