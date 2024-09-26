@@ -1,9 +1,10 @@
 "use client";
 import { AppQueryKeys } from "@/src/utils";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { twJoin } from "tailwind-merge";
 import { ApiService } from "../api/api-caller";
+import { useSelectedTaskGroup } from "./state";
 import { EditTaskGroups } from "./task-group/edit-task-groups";
 import { TaskGroupTab } from "./task-group/task-group-tab";
 
@@ -13,21 +14,20 @@ export const TaskGroup = () => {
     queryFn: ApiService.taskGroups.listTaskGroups,
   });
 
-  const [selectedTaskGroup, setSelectedTaskGroups] = useState<string | null>(
-    taskGroups?.[0]?.id || null
-  );
+  const [selectedTaskGroup, setSelectedTaskGroups] = useSelectedTaskGroup();
 
   const handleSelectTaskGroup = (taskGroupId: string) => {
     setSelectedTaskGroups(taskGroupId);
   };
 
   useEffect(() => {
+    console.log({ taskGroups, selectedTaskGroup });
     if (taskGroups.length === 0) return;
+    if (!selectedTaskGroup) return;
 
     // If the selected task group is not in the list, select the last one
-    // Also works for no selection
     if (!taskGroups.find((t) => t.id === selectedTaskGroup)) {
-      setSelectedTaskGroups(taskGroups[taskGroups.length - 1].id);
+      setSelectedTaskGroups(taskGroups[0].id);
     }
   }, [taskGroups, selectedTaskGroup]);
 
