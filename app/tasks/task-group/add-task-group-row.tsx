@@ -36,17 +36,20 @@ export const AddTaskGroupRow = ({
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        handleAddTaskGroup();
         e.stopPropagation();
+        handleAddTaskGroup();
       }}
       className="flex flex-row items-center gap-2 p-0"
     >
-      {isAdding && <span className="loading loading-spinner loading-md"></span>}
-      <label className="input mb-2 w-[100%] px-1 input-sm text-xs input-ghost flex flex-row items-center gap-2 text-neutral">
-        <CiCirclePlus size={20} />
+      <label className="input mb-2 w-[100%] px-1 input-sm text-xs flex flex-row items-center gap-2 text-neutral">
+        {isAdding ? (
+          <span className="loading loading-spinner loading-sm" />
+        ) : (
+          <CiCirclePlus size={20} />
+        )}
         <input
-          className="grow"
-          disabled={isAdding}
+          className="grow text-white"
+          readOnly={isAdding}
           type="text"
           placeholder="New Task Group Name"
           value={newTaskGroup}

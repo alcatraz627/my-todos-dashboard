@@ -21,12 +21,12 @@ interface NavbarButton {
     | "ghost";
 }
 
-const navbarButtons: NavbarButton[] = [
+export const navbarButtons: NavbarButton[] = [
   {
     title: "Day",
     icon: MdCalendarViewDay,
     path: "/day",
-    color: "primary",
+    color: "error",
   },
   {
     title: "Calendar",
@@ -38,12 +38,13 @@ const navbarButtons: NavbarButton[] = [
     title: "Tasks",
     icon: FaCircleCheck,
     path: "/tasks",
-    color: "error",
+    color: "info",
   },
   {
     title: "Notes",
     icon: MdNotes,
     path: "/notes",
+    color: "secondary",
   },
   {
     title: "Preferences",
@@ -61,7 +62,7 @@ export const Navbar = () => {
   }, []);
 
   return (
-    <div className="navbar btm-nav bg-base-300 align-stretch gap-2 h-fit max-w-screen-md mx-auto relative">
+    <div className="navbar btm-nav bg-base-100 align-stretch gap-2 h-fit max-w-screen-md mx-auto relative">
       {navbarButtons.map(({ path, icon: Icon, color, title }, idx) => (
         <div key={idx}>
           <Link

@@ -45,7 +45,7 @@ export const TaskGroup = () => {
       >
         <TaskGroupTab
           selected={selectedTaskGroup === _defaultTaskGroup}
-          title={"All"}
+          title="All"
           onClick={() => handleSelectTaskGroup(_defaultTaskGroup)}
         />
         {taskGroups.map((taskGroup) => (

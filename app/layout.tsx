@@ -1,4 +1,5 @@
 import { Navbar } from "@/src/components/navbar";
+import { TopBar } from "@/src/components/topbar";
 import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
 import "./globals.css";
@@ -21,9 +22,7 @@ export default function RootLayout({
       <body className={`${nunito.className} antialiased `}>
         <Providers>
           <div className="max-w-screen-md mx-auto bg-base-100 h-screen text-primary-content flex flex-col">
-            <div className="text-2xl text-center pt-4 pb-2 mb-4 border-b-4 border-primary bg-neutral">
-              Tasks Dashboard
-            </div>
+            <TopBar />
             {children}
             <Navbar />
           </div>

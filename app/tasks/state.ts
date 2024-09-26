@@ -5,11 +5,27 @@ export const LocalStorageKeys = {
   SelectedTaskGroup: "SelectedTaskGroup",
 };
 
-const selectedTaskGroupAtom = atomWithStorage<string | null>(
-  LocalStorageKeys.SelectedTaskGroup,
-  null
-);
+let selectedTaskGroupAtom: ReturnType<
+  typeof atomWithStorage<string | null>
+> | null = null;
 
-export const useSelectedTaskGroup = () => useAtom(selectedTaskGroupAtom);
+const createAtom = () => {
+  selectedTaskGroupAtom = atomWithStorage<string | null>(
+    LocalStorageKeys.SelectedTaskGroup,
+    null
+  );
+
+  return selectedTaskGroupAtom;
+};
+
+const getAtom = () => {
+  if (!selectedTaskGroupAtom) {
+    selectedTaskGroupAtom = createAtom();
+  }
+
+  return selectedTaskGroupAtom;
+};
+
+export const useSelectedTaskGroup = () => useAtom(getAtom());
 
 export const _defaultTaskGroup = "_all";

@@ -23,7 +23,7 @@ export const createTodoGroupDb = async (data: PatchPayload<TodoGroup>) => {
   return todo;
 };
 
-export const addTodoToGroupDb = async ({
+export const assignTodoToGroupDb = async ({
   todoId,
   groupId,
 }: {

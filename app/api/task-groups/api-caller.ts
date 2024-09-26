@@ -1,4 +1,4 @@
-import { TodoGroup } from "@prisma/client";
+import { Todo, TodoGroup } from "@prisma/client";
 import axios from "axios";
 import { PatchPayload, PatchPayloadWithId } from "../api-utils";
 
@@ -27,7 +27,20 @@ const deleteTaskGroup = async (id: TodoGroup["id"]) => {
   return response.data;
 };
 
+const addTaskToGroup = async ({
+  taskId,
+  groupId,
+}: {
+  taskId: string;
+  groupId: string;
+}) => {
+  const response = await axios.post<Todo>(`${ApiBaseUrl}/${groupId}/${taskId}`);
+
+  return response;
+};
+
 export const TaskGroupsApiCaller = {
+  addTaskToGroup,
   listTaskGroups,
   createTaskGroup,
   updateTaskGroup,

@@ -11,7 +11,9 @@ export const handlePrismaError = <T = unknown>(
   }
 };
 
-export type IdQueryParam = { params: { id: string } };
+export type IdQueryParam<T extends string = "id"> = {
+  params: Record<T, string>;
+};
 
 export type PatchPayload<
   T,

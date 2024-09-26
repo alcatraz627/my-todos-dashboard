@@ -36,7 +36,7 @@ export const ListTasks = () => {
   });
 
   const handleDeleteTask = async (id: string) => {
-    // TODO: Ask for confirmation
+    if (!confirm("Are you sure you want to delete this task?")) return;
     setFocusedTask(id);
     const response = await callDeleteTask(id);
 

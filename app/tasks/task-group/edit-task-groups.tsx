@@ -68,7 +68,7 @@ export const EditTaskGroups = ({ taskGroups }: { taskGroups: TodoGroup[] }) => {
 
   const handleDeleteTaskGroup = async (taskGroupId: string) => {
     // Only delete if there is more than one group
-    if (taskGroups.length < 2) return;
+    if (!taskGroups.length) return;
     if (!confirm("Are you sure you want to delete this group?")) return;
     setFocusTodoGroup(taskGroupId);
 
@@ -100,7 +100,6 @@ export const EditTaskGroups = ({ taskGroups }: { taskGroups: TodoGroup[] }) => {
           <EditTaskGroupRow
             key={taskGroup.id}
             isInFocus={taskGroup.id === focusTodoGroup}
-            isSingleEntity={taskGroups.length > 1}
             taskGroup={taskGroup}
             handleDelete={() => handleDeleteTaskGroup(taskGroup.id)}
             handleUpdate={handleUpdateTaskGroup}

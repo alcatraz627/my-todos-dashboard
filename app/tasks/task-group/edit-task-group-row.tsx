@@ -8,7 +8,6 @@ export const EditTaskGroupRow = ({
   taskGroup,
   handleUpdate,
   handleDelete,
-  isSingleEntity,
   isInFocus,
 }: {
   taskGroup: TodoGroup;
@@ -16,7 +15,6 @@ export const EditTaskGroupRow = ({
     newData: PatchPayloadWithId<TodoGroup>
   ) => Promise<TodoGroup | void>;
   handleDelete: () => Promise<void>;
-  isSingleEntity?: boolean;
   isInFocus: boolean;
 }) => {
   const titleRef = useRef<HTMLDivElement>(null);
@@ -42,11 +40,12 @@ export const EditTaskGroupRow = ({
         onKeyDown={(e) => {
           if (e.key === "Enter") {
             e.preventDefault();
+            e.stopPropagation();
             handleUpdate({
               id: taskGroup.id,
               title: e.currentTarget.innerText,
             });
-            e.currentTarget.parentElement?.parentElement?.focus?.();
+            // e.currentTarget.focus?.();
           }
         }}
         onBlur={() => {
@@ -67,7 +66,7 @@ export const EditTaskGroupRow = ({
       <div
         className={twJoin(
           "px-0 text-lg cursor-pointer hover:opacity-70 transition",
-          isSingleEntity ? "text-error" : "text-neutral"
+          isInFocus ? "text-neutral" : "text-error"
         )}
       >
         <MdDelete className="" onClick={() => handleDelete()} />
