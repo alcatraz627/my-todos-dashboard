@@ -17,15 +17,17 @@ const config: Config = {
     },
   },
   safelist: [
-    "btn-primary",
-    "btn-secondary",
-    "btn-success",
-    "btn-info",
-    "btn-error",
-    "btn-neutral",
-    "btn-warning",
-    "btn-ghost",
-  ],
+    "primary",
+    "secondary",
+    "success",
+    "info",
+    "error",
+    "neutral",
+    "warning",
+    "ghost",
+  ]
+    .map((v) => [`btn`, `border`, "text", "bg"].map((p) => `${p}-${v}`))
+    .flatMap((v) => v),
   plugins: [daisyui],
   daisyui: {
     themes: [
