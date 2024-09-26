@@ -1,95 +1,40 @@
 "use client";
 import { ApiService } from "@/app/api/api-caller";
 import { PatchPayloadWithId } from "@/app/api/api-utils";
-import { AppQueryKeys } from "@/src/utils";
+import { AppMutationKeys, AppQueryKeys } from "@/src/utils";
 import { createServerAction } from "@/src/utils/server-actions";
 import { TodoGroup } from "@prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRef } from "react";
+import { useState } from "react";
 import { FaCaretUp } from "react-icons/fa6";
-import { MdDelete } from "react-icons/md";
-import { twJoin } from "tailwind-merge";
-
-const EditTaskGroupRow = ({
-  taskGroup,
-  handleUpdate,
-  handleDelete,
-  isSingleEntity,
-}: {
-  taskGroup: TodoGroup;
-  handleUpdate: (
-    newData: PatchPayloadWithId<TodoGroup>
-  ) => Promise<TodoGroup | void>;
-  handleDelete: () => Promise<void>;
-  isSingleEntity?: boolean;
-}) => {
-  const titleRef = useRef<HTMLDivElement>(null);
-
-  return (
-    <div className="px-2 flex flex-row items-center justify-between mb-2 mt-2">
-      <span
-        className={twJoin(
-          "badge relative border-neutral border-2 bg-neutral badge-sm",
-          `bg-[${taskGroup.color}]`
-        )}
-      />
-      <div
-        ref={titleRef}
-        className="ml-0 mr-auto px-2 min-w-[20ch] max-w-[70vw]"
-        contentEditable
-        suppressContentEditableWarning
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            handleUpdate({
-              id: taskGroup.id,
-              title: e.currentTarget.innerText,
-            });
-            e.currentTarget.parentElement?.parentElement?.focus?.();
-          }
-        }}
-        onBlur={() => {
-          if (!titleRef.current) return;
-          const currTextVal = titleRef.current.innerHTML;
-
-          if (!currTextVal) return;
-          if (currTextVal === taskGroup.title) return;
-
-          handleUpdate({
-            id: taskGroup.id,
-            title: currTextVal,
-          });
-        }}
-      >
-        {taskGroup.title}
-      </div>
-      <div
-        className={twJoin(
-          "px-0 text-lg",
-          isSingleEntity ? "text-error" : "text-neutral"
-        )}
-      >
-        <MdDelete className="" onClick={() => handleDelete()} />
-      </div>
-    </div>
-  );
-};
+import { AddTaskGroupRow } from "./add-task-group-row";
+import { EditTaskGroupRow } from "./edit-task-group-row";
 
 export const EditTaskGroups = ({ taskGroups }: { taskGroups: TodoGroup[] }) => {
   const queryClient = useQueryClient();
+  const [focusTodoGroup, setFocusTodoGroup] = useState<string | null>(null);
+
+  const { mutateAsync: callCreateTaskGroup } = useMutation({
+    mutationFn: createServerAction(ApiService.taskGroups.createTaskGroup),
+    mutationKey: AppMutationKeys.taskGroups.create(),
+  });
 
   const { mutateAsync: callDeleteTaskGroup } = useMutation({
     mutationFn: createServerAction(ApiService.taskGroups.deleteTaskGroup),
+    mutationKey: AppMutationKeys.taskGroups.delete(),
   });
 
   const { mutateAsync: callUpdateTaskGroup } = useMutation({
     mutationFn: createServerAction(ApiService.taskGroups.updateTaskGroup),
+    mutationKey: AppMutationKeys.taskGroups.update(),
   });
 
-  const handleUpdateTaskGroup = async (
-    updateData: PatchPayloadWithId<TodoGroup>
-  ) => {
-    const response = await callUpdateTaskGroup(updateData);
+  const handleAddNewTaskGroup = async (title: TodoGroup["title"]) => {
+    const response = await callCreateTaskGroup({
+      title,
+      description: "",
+      color: "",
+    });
 
     if (!response.success) {
       // TODO: Show error
@@ -102,20 +47,42 @@ export const EditTaskGroups = ({ taskGroups }: { taskGroups: TodoGroup[] }) => {
     return response.value;
   };
 
+  const handleUpdateTaskGroup = async (
+    updateData: PatchPayloadWithId<TodoGroup>
+  ) => {
+    setFocusTodoGroup(updateData.id);
+    const response = await callUpdateTaskGroup(updateData);
+
+    if (!response.success) {
+      // TODO: Show error
+      console.log(response.error);
+      setFocusTodoGroup(null);
+      return;
+    }
+
+    queryClient.invalidateQueries({ queryKey: AppQueryKeys.taskGroups });
+
+    setFocusTodoGroup(null);
+    return response.value;
+  };
+
   const handleDeleteTaskGroup = async (taskGroupId: string) => {
     // Only delete if there is more than one group
     if (taskGroups.length < 2) return;
     if (!confirm("Are you sure you want to delete this group?")) return;
+    setFocusTodoGroup(taskGroupId);
 
     const response = await callDeleteTaskGroup(taskGroupId);
 
     if (!response.success) {
       // TODO: Show error
       console.log(response.error);
+      setFocusTodoGroup(null);
       return;
     }
 
     await queryClient.invalidateQueries({ queryKey: AppQueryKeys.taskGroups });
+    setFocusTodoGroup(null);
     // TODO: Show an "undo" toast
   };
 
@@ -132,12 +99,14 @@ export const EditTaskGroups = ({ taskGroups }: { taskGroups: TodoGroup[] }) => {
         {taskGroups.map((taskGroup) => (
           <EditTaskGroupRow
             key={taskGroup.id}
+            isInFocus={taskGroup.id === focusTodoGroup}
             isSingleEntity={taskGroups.length > 1}
             taskGroup={taskGroup}
             handleDelete={() => handleDeleteTaskGroup(taskGroup.id)}
             handleUpdate={handleUpdateTaskGroup}
           />
         ))}
+        <AddTaskGroupRow addTaskGroup={handleAddNewTaskGroup} />
       </div>
     </div>
   );

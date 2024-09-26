@@ -1,22 +1,13 @@
 "use client";
 import { AppQueryKeys } from "@/src/utils";
-import { createServerAction } from "@/src/utils/server-actions";
-import { TodoGroup } from "@prisma/client";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { twJoin } from "tailwind-merge";
 import { ApiService } from "../api/api-caller";
-import { AddTaskGroup } from "./task-group/add-task-group";
 import { EditTaskGroups } from "./task-group/edit-task-groups";
 import { TaskGroupTab } from "./task-group/task-group-tab";
 
 export const TaskGroup = () => {
-  const queryClient = useQueryClient();
-
-  const { mutateAsync: callCreateTaskGroup } = useMutation({
-    mutationFn: createServerAction(ApiService.taskGroups.createTaskGroup),
-  });
-
   const { data: taskGroups = [], isFetching: isLoading } = useQuery({
     queryKey: AppQueryKeys.taskGroups,
     queryFn: ApiService.taskGroups.listTaskGroups,
@@ -28,24 +19,6 @@ export const TaskGroup = () => {
 
   const handleSelectTaskGroup = (taskGroupId: string) => {
     setSelectedTaskGroups(taskGroupId);
-  };
-
-  const handleAddNewTaskGroup = async (title: TodoGroup["title"]) => {
-    const response = await callCreateTaskGroup({
-      title,
-      description: "",
-      color: "",
-    });
-
-    if (!response.success) {
-      // TODO: Show error
-      console.log(response.error);
-      return;
-    }
-
-    queryClient.invalidateQueries({ queryKey: AppQueryKeys.taskGroups });
-
-    return response.value;
   };
 
   useEffect(() => {
@@ -62,12 +35,12 @@ export const TaskGroup = () => {
     <div className="mt-auto w-[100%] flex flex-row flex-grow-0 bg-base-200 justify-between items-center">
       <span
         className={twJoin(
-          "loading loading-spinner mx-0 px-2 loading-xs bg-accent",
+          "loading loading-spinner mx-2 px-0 loading-xs bg-accent",
           isLoading ? "visible" : "invisible"
         )}
       />
       <div
-        className="tabs tabs-boxed w-max justify-start max-w-[90vw] overflow-x-auto"
+        className="tabs tabs-boxed w-max justify-start max-w-[90vw] overflow-x-auto mr-auto"
         role="tablist"
       >
         {taskGroups.map((taskGroup) => (
@@ -79,7 +52,6 @@ export const TaskGroup = () => {
           />
         ))}
       </div>
-      <AddTaskGroup handleAddNew={handleAddNewTaskGroup} />
       <EditTaskGroups taskGroups={taskGroups} />
     </div>
   );

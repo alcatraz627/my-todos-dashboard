@@ -1,13 +1,13 @@
 "use client";
-import { AppQueryKeys } from "@/src/utils";
+import { AppMutationKeys, AppQueryKeys } from "@/src/utils";
 import { createServerAction } from "@/src/utils/server-actions";
 import { TodoGroup } from "@prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { FaSquarePlus } from "react-icons/fa6";
+import { CiCirclePlus } from "react-icons/ci";
 
-const AddTaskGroupTitle = ({
-  addTaskGroup,
+export const AddTaskGroupRow = ({
+  addTaskGroup: handleAdd,
 }: {
   addTaskGroup: (title: string) => Promise<TodoGroup | void>;
 }) => {
@@ -15,7 +15,8 @@ const AddTaskGroupTitle = ({
   const [newTaskGroup, setNewTaskGroup] = useState("");
 
   const { mutateAsync: callAddTaskGroup, isPending: isAdding } = useMutation({
-    mutationFn: createServerAction(addTaskGroup),
+    mutationFn: createServerAction(handleAdd),
+    mutationKey: AppMutationKeys.taskGroups.create(),
   });
 
   const handleAddTaskGroup = async () => {
@@ -36,39 +37,22 @@ const AddTaskGroupTitle = ({
       onSubmit={(e) => {
         e.preventDefault();
         handleAddTaskGroup();
+        e.stopPropagation();
       }}
       className="flex flex-row items-center gap-2 p-0"
     >
       {isAdding && <span className="loading loading-spinner loading-md"></span>}
-      <input
-        disabled={isAdding}
-        type="text"
-        placeholder="New Task Group Name"
-        className="input input-bordered my-2 w-[100%]"
-        value={newTaskGroup}
-        onChange={(e) => setNewTaskGroup(e.target.value)}
-      />
+      <label className="input mb-2 w-[100%] px-1 input-sm text-xs input-ghost flex flex-row items-center gap-2 text-neutral">
+        <CiCirclePlus size={20} />
+        <input
+          className="grow"
+          disabled={isAdding}
+          type="text"
+          placeholder="New Task Group Name"
+          value={newTaskGroup}
+          onChange={(e) => setNewTaskGroup(e.target.value)}
+        />
+      </label>
     </form>
-  );
-};
-
-export const AddTaskGroup = ({
-  handleAddNew,
-}: {
-  handleAddNew: (p: string) => Promise<TodoGroup | void>;
-}) => {
-  return (
-    <div className="dropdown dropdown-top dropdown-left bg-base-200 max-w-[40px] mx-3">
-      <div role="button" className="focus:text-accent" tabIndex={0}>
-        <FaSquarePlus />
-      </div>
-
-      <div
-        className="dropdown-content menu bg-base-100 rounded-box z-[1] shadow border-2 border-info mb-3 [inset-inline-end:0px!important] w-[70vw]"
-        tabIndex={0}
-      >
-        <AddTaskGroupTitle addTaskGroup={handleAddNew} />
-      </div>
-    </div>
   );
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import { AppQueryKeys } from "@/src/utils";
+import { AppMutationKeys, AppQueryKeys } from "@/src/utils";
 import { createServerAction } from "@/src/utils/server-actions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -11,6 +11,7 @@ export const AddTask = () => {
 
   const { mutateAsync: callAddTask, isPending: isAdding } = useMutation({
     mutationFn: createServerAction(ApiService.tasks.createTask),
+    mutationKey: AppMutationKeys.tasks.create(),
   });
 
   const queryClient = useQueryClient();

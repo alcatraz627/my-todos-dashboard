@@ -1,5 +1,5 @@
 "use client";
-import { AppQueryKeys } from "@/src/utils";
+import { AppMutationKeys, AppQueryKeys } from "@/src/utils";
 import { createServerAction } from "@/src/utils/server-actions";
 import { Todo } from "@prisma/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -24,10 +24,12 @@ export const ListTasks = () => {
 
   const { mutateAsync: callDeleteTask } = useMutation({
     mutationFn: createServerAction(ApiService.tasks.deleteTask),
+    mutationKey: AppMutationKeys.tasks.delete(),
   });
 
   const { mutateAsync: callUpdateTask } = useMutation({
     mutationFn: createServerAction(ApiService.tasks.updateTask),
+    mutationKey: AppMutationKeys.tasks.update(),
   });
 
   const handleDeleteTask = async (id: string) => {

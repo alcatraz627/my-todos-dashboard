@@ -5,6 +5,49 @@ export const AppQueryKeys = {
   taskGroups: ["taskGroups"],
 };
 
+const MutationActions = {
+  create: "create",
+  update: "update",
+  delete: "delete",
+};
+
+export const AppMutationKeys = {
+  tasks: {
+    create: (id: string = "any") => [
+      AppQueryKeys.tasks[0],
+      MutationActions.create,
+      id,
+    ],
+    update: (id: string = "any") => [
+      AppQueryKeys.tasks[0],
+      MutationActions.update,
+      id,
+    ],
+    delete: (id: string = "any") => [
+      AppQueryKeys.tasks[0],
+      MutationActions.delete,
+      id,
+    ],
+  },
+  taskGroups: {
+    create: (id: string = "any") => [
+      AppQueryKeys.taskGroups[0],
+      MutationActions.create,
+      id,
+    ],
+    update: (id: string = "any") => [
+      AppQueryKeys.taskGroups[0],
+      MutationActions.update,
+      id,
+    ],
+    delete: (id: string = "any") => [
+      AppQueryKeys.taskGroups[0],
+      MutationActions.delete,
+      id,
+    ],
+  },
+};
+
 function makeQueryClient() {
   return new QueryClient({
     defaultOptions: {
