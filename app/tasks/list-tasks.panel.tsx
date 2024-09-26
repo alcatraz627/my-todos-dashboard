@@ -3,8 +3,9 @@ import { AppMutationKeys, AppQueryKeys } from "@/src/utils";
 import { createServerAction } from "@/src/utils/server-actions";
 import { Todo } from "@prisma/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { ApiService } from "../api/api-caller";
+import { _defaultTaskGroup, useSelectedTaskGroup } from "./state";
 import { TaskRow } from "./task-row/task-row";
 
 // Making direct API calls is better for client side data fetching useQuery
@@ -12,6 +13,8 @@ import { TaskRow } from "./task-row/task-row";
 
 export const ListTasks = () => {
   const queryClient = useQueryClient();
+
+  const [selectedTaskGroup] = useSelectedTaskGroup();
 
   const { data: tasks = [], isPending: isLoading } = useQuery({
     queryKey: AppQueryKeys.tasks,
@@ -62,21 +65,36 @@ export const ListTasks = () => {
     return updateData;
   };
 
+  const filteredTasks = useMemo(() => {
+    if (!selectedTaskGroup || selectedTaskGroup === _defaultTaskGroup)
+      return tasks;
+
+    return tasks.filter((t) => t.todoGroupId === selectedTaskGroup);
+  }, [tasks, selectedTaskGroup]);
+
   return (
-    <div className="px-4">
-      {tasks.map((task) => (
-        <TaskRow
-          key={task.id}
-          task={task}
-          isInFocus={focusedTask === task.id}
-          handleUpdateTask={handleUpdateTask}
-          handleDeleteTask={handleDeleteTask}
-        />
-      ))}
+    <>
+      <div className="px-4">
+        {filteredTasks.map((task) => (
+          <TaskRow
+            key={task.id}
+            task={task}
+            isInFocus={focusedTask === task.id}
+            handleUpdateTask={handleUpdateTask}
+            handleDeleteTask={handleDeleteTask}
+          />
+        ))}
+      </div>
+
+      {filteredTasks.length === 0 && (
+        <div className="text-center h-[100%] flex flex-col justify-center">
+          <h1 className="text-xl font-light">No Tasks Found</h1>
+        </div>
+      )}
 
       {isLoading && (
         <span className="loading loading-spinner loading-md"></span>
       )}
-    </div>
+    </>
   );
 };

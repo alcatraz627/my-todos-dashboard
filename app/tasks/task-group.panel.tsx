@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { twJoin } from "tailwind-merge";
 import { ApiService } from "../api/api-caller";
-import { useSelectedTaskGroup } from "./state";
+import { _defaultTaskGroup, useSelectedTaskGroup } from "./state";
 import { EditTaskGroups } from "./task-group/edit-task-groups";
 import { TaskGroupTab } from "./task-group/task-group-tab";
 
@@ -21,9 +21,9 @@ export const TaskGroup = () => {
   };
 
   useEffect(() => {
-    console.log({ taskGroups, selectedTaskGroup });
     if (taskGroups.length === 0) return;
     if (!selectedTaskGroup) return;
+    if (selectedTaskGroup === _defaultTaskGroup) return;
 
     // If the selected task group is not in the list, select the last one
     if (!taskGroups.find((t) => t.id === selectedTaskGroup)) {
@@ -43,6 +43,11 @@ export const TaskGroup = () => {
         className="tabs tabs-boxed w-max justify-start max-w-[90vw] overflow-x-auto mr-auto"
         role="tablist"
       >
+        <TaskGroupTab
+          selected={selectedTaskGroup === _defaultTaskGroup}
+          title={"All"}
+          onClick={() => handleSelectTaskGroup(_defaultTaskGroup)}
+        />
         {taskGroups.map((taskGroup) => (
           <TaskGroupTab
             key={taskGroup.id}
