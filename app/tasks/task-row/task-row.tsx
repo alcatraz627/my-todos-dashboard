@@ -1,7 +1,11 @@
-import { Todo } from "@prisma/client";
+import { AppQueryKeys } from "@/src/utils";
+import { Todo, TodoGroup } from "@prisma/client";
+import { useQuery } from "@tanstack/react-query";
 import { FaCaretDown, FaEdit } from "react-icons/fa";
 import { SiClockify } from "react-icons/si";
 import { twJoin } from "tailwind-merge";
+import { _defaultTaskGroup, useSelectedTaskGroup } from "../state";
+import { SelectTaskGroup } from "./select-task-group";
 import { TaskCompleted } from "./task-completed";
 import { TaskDropdown } from "./task-dropdown";
 import { TaskTitle } from "./task-title";
@@ -11,14 +15,28 @@ export const TaskRow = ({
   isInFocus,
   handleUpdateTask,
   handleDeleteTask,
+  handleUpdateTaskGroup,
 }: {
   task: Todo;
   isInFocus: boolean;
   handleUpdateTask: (task: Todo) => Promise<Todo | void>;
   handleDeleteTask: (id: string) => Promise<void>;
+  handleUpdateTaskGroup: (data: {
+    taskId: string;
+    groupId: string;
+  }) => Promise<void>;
 }) => {
   const toolbarBtnClass =
     "btn btn-rounded btn-md pl-2 pr-2 h-10 min-h-6 join-item";
+
+  const [selectedTaskGroup] = useSelectedTaskGroup();
+  const isAllTasks = selectedTaskGroup === _defaultTaskGroup;
+
+  const { data: taskGroups = [] } = useQuery<TodoGroup[]>({
+    queryKey: AppQueryKeys.taskGroups,
+  });
+
+  const taskGroup = taskGroups.find((t) => t.id === task.todoGroupId);
 
   return (
     <div
@@ -43,7 +61,16 @@ export const TaskRow = ({
       />
 
       {/* Dropdown */}
-      <div className="flex justify-end gap-0.5 join">
+      <div className="flex justify-end gap-0.5">
+        {isAllTasks && (
+          <SelectTaskGroup
+            task={task}
+            taskGroups={taskGroups}
+            handleUpdateTaskGroup={handleUpdateTaskGroup}
+            className="w-min text-xs select-bordered my-auto"
+          />
+        )}
+
         {/* Raw Edit */}
         {false && (
           <button className={toolbarBtnClass + " text-gray-500 !pl-4"}>
@@ -59,7 +86,11 @@ export const TaskRow = ({
         )}
 
         {/* Options */}
-        <TaskDropdown task={task} handleDeleteTask={handleDeleteTask}>
+        <TaskDropdown
+          task={task}
+          handleDeleteTask={handleDeleteTask}
+          taskGroups={taskGroups}
+        >
           <div
             role="button"
             className={"text-gray-500 focus:text-info " + toolbarBtnClass}

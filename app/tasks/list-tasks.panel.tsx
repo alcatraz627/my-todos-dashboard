@@ -1,6 +1,5 @@
 "use client";
 import { AppMutationKeys, AppQueryKeys } from "@/src/utils";
-import { createServerAction } from "@/src/utils/server-actions";
 import { Todo } from "@prisma/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
@@ -26,25 +25,26 @@ export const ListTasks = () => {
   const [focusedTask, setFocusedTask] = useState<string | null>(null);
 
   const { mutateAsync: callDeleteTask } = useMutation({
-    mutationFn: createServerAction(ApiService.tasks.deleteTask),
+    mutationFn: ApiService.tasks.deleteTask,
     mutationKey: AppMutationKeys.tasks.delete(),
   });
 
   const { mutateAsync: callUpdateTask } = useMutation({
-    mutationFn: createServerAction(ApiService.tasks.updateTask),
+    mutationFn: ApiService.tasks.updateTask,
     mutationKey: AppMutationKeys.tasks.update(),
+  });
+
+  const {
+    mutateAsync: callAddTaskToGroup,
+    isPending: isPendingAddTaskToGroup,
+  } = useMutation({
+    mutationFn: ApiService.taskGroups.addTaskToGroup,
   });
 
   const handleDeleteTask = async (id: string) => {
     if (!confirm("Are you sure you want to delete this task?")) return;
     setFocusedTask(id);
     const response = await callDeleteTask(id);
-
-    if (!response.success) {
-      // TODO: Show error
-      console.log(response.error);
-      return;
-    }
 
     await queryClient.invalidateQueries({ queryKey: AppQueryKeys.tasks });
     setFocusedTask(null);
@@ -54,20 +54,32 @@ export const ListTasks = () => {
   const handleUpdateTask = async (updateData: Todo) => {
     const response = await callUpdateTask(updateData);
 
-    if (!response.success) {
-      // TODO: Show error
-      console.log(response.error);
-      return;
-    }
-
     queryClient.invalidateQueries({ queryKey: AppQueryKeys.tasks });
 
     return updateData;
   };
 
+  const handleUpdateTaskGroup = async (data: {
+    taskId: string;
+    groupId: string;
+  }) => {
+    if (isPendingAddTaskToGroup) return;
+
+    const response = await callAddTaskToGroup(data);
+
+    queryClient.invalidateQueries({ queryKey: AppQueryKeys.tasks });
+
+    return response;
+  };
+
   const filteredTasks = useMemo(() => {
     if (!selectedTaskGroup || selectedTaskGroup === _defaultTaskGroup)
-      return tasks;
+      return tasks.sort((b, a) => {
+        if (a.todoGroupId && b.todoGroupId) {
+          return a.todoGroupId.localeCompare(b.todoGroupId);
+        }
+        return 0;
+      });
 
     return tasks.filter((t) => t.todoGroupId === selectedTaskGroup);
   }, [tasks, selectedTaskGroup]);
@@ -82,6 +94,7 @@ export const ListTasks = () => {
             isInFocus={focusedTask === task.id}
             handleUpdateTask={handleUpdateTask}
             handleDeleteTask={handleDeleteTask}
+            handleUpdateTaskGroup={handleUpdateTaskGroup}
           />
         ))}
       </div>
